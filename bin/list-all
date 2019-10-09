@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cmd="curl -s https://dl.min.io/server/minio/release/linux-amd64/archive/"
+versions=$(eval $cmd | grep -Po "(?<=minio\.RELEASE\.)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}Z" | sort | uniq)
+echo $versions
