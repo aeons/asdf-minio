@@ -20,17 +20,33 @@ install_minio() {
   chmod +x $binary_path
 }
 
-get_arch() {
+get_kernel() {
   uname | tr '[:upper:]' '[:lower:]'
+}
+
+get_arch() {
+  raw_arch="$(uname -m)"
+
+  case ${raw_arch} in
+  x86_64)
+    echo "amd64"
+    ;;
+  armv7l)
+    echo "arm"
+    ;;
+  *)
+    echo "${raw_arch}"
+    ;;
+  esac
 }
 
 get_download_url() {
   local version=$1
+  local kernel="$(get_kernel)"
   local arch="$(get_arch)"
   local filename="minio.RELEASE.${version}"
 
-  echo "https://dl.min.io/server/minio/release/${arch}-amd64/archive/${filename}"
+  echo "https://dl.min.io/server/minio/release/${kernel}-${arch}/archive/${filename}"
 }
-
 
 install_minio $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
