@@ -16,7 +16,7 @@ install_minio() {
   mkdir -p "${bin_install_path}"
 
   echo "Downloading minio from ${download_url}"
-  curl -Lo $binary_path $download_url
+  curl --fail -Lo $binary_path $download_url
   chmod +x $binary_path
 }
 
