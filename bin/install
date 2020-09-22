@@ -4,33 +4,51 @@ set -e
 set -o pipefail
 
 install_minio() {
-  local install_type=$1
-  local version=$2
-  local install_path=$3
+  local version install_path bin_install_path binary_path download_url
 
-  local bin_install_path="$install_path/bin"
-  local binary_path="$bin_install_path/minio"
-  local download_url=$(get_download_url $version)
+  version="${1}"
+  install_path="${2}"
+  bin_install_path="${install_path}/bin"
+  binary_path="${bin_install_path}/minio"
+  download_url=$(get_download_url "${version}")
 
   echo "Creating bin directory"
   mkdir -p "${bin_install_path}"
 
   echo "Downloading minio from ${download_url}"
-  curl --fail -Lo $binary_path $download_url
-  chmod +x $binary_path
+  curl --fail -Lo "${binary_path}" "${download_url}"
+  chmod +x "${binary_path}"
 }
 
-get_arch() {
+get_kernel() {
   uname | tr '[:upper:]' '[:lower:]'
 }
 
-get_download_url() {
-  local version=$1
-  local arch="$(get_arch)"
-  local filename="minio.RELEASE.${version}"
+get_arch() {
+  raw_arch="$(uname -m)"
 
-  echo "https://dl.min.io/server/minio/release/${arch}-amd64/archive/${filename}"
+  case ${raw_arch} in
+  x86_64)
+    echo "amd64"
+    ;;
+  armv7l)
+    echo "arm"
+    ;;
+  *)
+    echo "${raw_arch}"
+    ;;
+  esac
 }
 
+get_download_url() {
+  local version kernel arch filename
 
-install_minio $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+  version=$1
+  kernel="$(get_kernel)"
+  arch="$(get_arch)"
+  filename="minio.RELEASE.${version}"
+
+  echo "https://dl.min.io/server/minio/release/${kernel}-${arch}/archive/${filename}"
+}
+
+install_minio "${ASDF_INSTALL_VERSION}" "${ASDF_INSTALL_PATH}"
