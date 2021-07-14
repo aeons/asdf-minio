@@ -1,0 +1,11 @@
+name: asdf plugin test
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: asdf-vm/actions/plugin-test@v1
+        with:
+          command: "minio --version"
