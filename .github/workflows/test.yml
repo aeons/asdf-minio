@@ -1,4 +1,4 @@
-name: asdf plugin test
+name: Test
 on:
   - push
   - pull_request
