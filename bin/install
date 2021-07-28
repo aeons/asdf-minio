@@ -31,7 +31,7 @@ get_arch() {
   x86_64)
     echo "amd64"
     ;;
-  armv7l|aarch64)
+  armv7l|aarch64|arm64)
     echo "arm"
     ;;
   *)
@@ -47,6 +47,10 @@ get_download_url() {
   kernel="$(get_kernel)"
   arch="$(get_arch)"
   filename="minio.RELEASE.${version}"
+
+  if [ "$kernel-$arch" = "darwin-arm" ]; then
+    arch="amd64" # upstream doesn't have a binary compiled for Apple Silicon, use Rosetta 2.
+  fi
 
   echo "https://dl.min.io/server/minio/release/${kernel}-${arch}/archive/${filename}"
 }
